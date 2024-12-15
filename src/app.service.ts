@@ -1,10 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Context, SlashCommand, SlashCommandContext } from 'necord';
 
 @Injectable()
 export class AppService {
-  private readonly logger = new Logger(AppService.name);
-
   @SlashCommand({
     name: 'ping',
     description: 'Ping command!',
