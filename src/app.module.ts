@@ -4,6 +4,7 @@ import { IntentsBitField } from 'discord.js';
 import { AppService } from './app.service';
 import { MovieService } from './movie/movie.service';
 import { YtsModule } from '@app/yts';
+import { MovieProxyModule } from './movie/url.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { YtsModule } from '@app/yts';
       intents: [IntentsBitField.Flags.Guilds],
       development: [process.env.DISCORD_DEVELOPMENT_GUILD_ID],
     }),
+    MovieProxyModule,
   ],
   providers: [AppService, MovieService],
 })

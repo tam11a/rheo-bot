@@ -64,7 +64,7 @@ export class YtsService {
 
     return {
       status: 'success',
-      message: `Found ${res.data?.data?.movie_count} movies!`,
+      message: `Found ${res.data?.data?.movie_count} movies, with query: ${query_term}!`,
       data: res.data?.data,
     };
   }

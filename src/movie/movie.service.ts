@@ -17,7 +17,7 @@ export class MovieService {
     @Options() { query_term }: MovieSearchDto,
   ) {
     // Search for the movie using the query_term provided by the user in the command options and return the result to the user.
-    const movies = await this.yts.searchMovie(query_term);
+    const movies = await this.yts.searchMovie(query_term, 10);
 
     if (movies.status === 'error') {
       return interaction.reply({
@@ -31,7 +31,7 @@ export class MovieService {
         (movie: any): APIEmbed | JSONEncodable<APIEmbed> => {
           return {
             title: movie.title_long || movie.title,
-            description: movie.summary,
+            // description: movie.summary,
             fields: [
               {
                 name: 'IMDB Code',
@@ -45,12 +45,12 @@ export class MovieService {
               },
               {
                 name: 'Year',
-                value: (movie.year as string) || 'N/A',
+                value: movie.year ? movie.year.toString() : 'N/A',
                 inline: true,
               },
               {
                 name: 'Genres',
-                value: movie.genres.join(', '),
+                value: movie.genres?.join(', '),
                 inline: true,
               },
               {
@@ -85,16 +85,24 @@ export class MovieService {
     //     .setStyle(ButtonStyle.Primary)
     //     .setCustomId(`movie_torrent_yts_${movie.id}`);
     // });
-
-    return interaction.reply({
-      content: movies.message,
-      embeds,
-      //   components: [
-      //     {
-      //       type: ComponentType.ActionRow,
-      //       components: buttons,
-      //     },
-      //   ],
-    });
+    try {
+      return interaction.reply({
+        content: movies.message,
+        embeds,
+        //   components: [
+        //     {
+        //       type: ComponentType.ActionRow,
+        //       components: buttons,
+        //     },
+        //   ],
+        // ephemeral: true, // Make the response ephemeral
+      });
+    } catch (error) {
+      console.log(error);
+      return interaction.reply({
+        content: 'An error occurred while processing your request!',
+        ephemeral: true,
+      });
+    }
   }
 }
