@@ -10,4 +10,4 @@ services:
     env_file:
       - .env
     ports:
-      - '4020:4000'
+      - '3333:3333'
