@@ -3,6 +3,7 @@ import { Context, Options, SlashCommand, SlashCommandContext } from 'necord';
 import { MovieSearchDto } from './dto/search.dto';
 import { YtsService } from '@app/yts';
 import { APIEmbed, JSONEncodable } from 'discord.js';
+import urlJoin from 'url-join';
 
 @Injectable()
 export class MovieService {
@@ -67,7 +68,8 @@ export class MovieService {
                 name: 'Torrents',
                 value: movie.torrents
                   .map((torrent: any) => {
-                    return `[${torrent.quality}](${torrent.url})`;
+                    console.log(torrent);
+                    return `[${torrent.quality}](${urlJoin(process.env.MY_DOMAIN, '/proxy/yts/torrent/', torrent.hash)})`;
                   })
                   .join(' | '),
               },
