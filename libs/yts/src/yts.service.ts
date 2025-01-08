@@ -28,7 +28,7 @@ export class YtsService {
 
   public async searchMovie(
     query_term: string,
-    limit: number = 20,
+    limit: number = 10,
     page: number = 1,
     quality: string = 'all',
     minimum_rating: number = 0,

@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Context, Options, SlashCommand, SlashCommandContext } from 'necord';
 import { MovieSearchDto } from './dto/search.dto';
 import { YtsService } from '@app/yts';
-import { APIEmbed, JSONEncodable } from 'discord.js';
+import {
+  APIEmbed,
+  // ButtonBuilder,
+  // ButtonStyle,
+  // ComponentType,
+  JSONEncodable,
+} from 'discord.js';
 import urlJoin from 'url-join';
 
 @Injectable()
@@ -32,46 +38,48 @@ export class MovieService {
         (movie: any): APIEmbed | JSONEncodable<APIEmbed> => {
           return {
             title: movie.title_long || movie.title,
-            description: movie.summary,
+            description: movie.yt_trailer_code
+              ? `[🚀 Watch Trailer](https://www.youtube.com/watch?v=${movie.yt_trailer_code})`
+              : null,
             fields: [
               {
-                name: 'IMDB Code',
+                name: '🎟️ IMDB Code',
                 value: movie.imdb_code,
                 inline: true,
               },
               {
-                name: 'Rating',
+                name: '⭐ Rating',
                 value: movie.rating ? movie.rating.toString() : 'N/A',
                 inline: true,
               },
               {
-                name: 'Year',
+                name: '📅 Year',
                 value: (movie.year as string) || 'N/A',
                 inline: true,
               },
               {
-                name: 'Genres',
+                name: '🎊 Genres',
                 value: movie.genres.join(', '),
                 inline: true,
               },
               {
-                name: 'Language',
+                name: '🌐 Language',
                 value: movie.language || 'N/A',
                 inline: true,
               },
               {
-                name: 'Runtime',
+                name: '🕘 Runtime',
                 value: `${movie.runtime || 'N/A'} min`,
                 inline: true,
               },
               {
-                name: 'Torrents',
+                name: '▶️ Torrents',
                 value: movie.torrents
                   .map((torrent: any) => {
                     console.log(torrent);
-                    return `[${torrent.quality}](${urlJoin(process.env.MY_DOMAIN, '/proxy/yts/torrent/', torrent.hash)})`;
+                    return ` [${torrent.quality}-${torrent.type} S-${torrent.seeds} P-${torrent.peers} (${torrent.size})](${urlJoin(process.env.MY_DOMAIN, '/proxy/yts/torrent/', torrent.hash)})`;
                   })
-                  .join(' | '),
+                  .join(' \n '),
               },
             ],
             thumbnail: {
@@ -81,22 +89,26 @@ export class MovieService {
         },
       );
 
-    // const buttons = movies.data.movies.map((movie) => {
-    //   return new ButtonBuilder()
-    //     .setLabel(movie.title)
+    // const buttons = [
+    //   new ButtonBuilder()
+    //     .setLabel('Previous Page')
+    //     .setStyle(ButtonStyle.Secondary)
+    //     .setCustomId(`movie_torrent_yts_page_2`),
+    //   new ButtonBuilder()
+    //     .setLabel('Next Page')
     //     .setStyle(ButtonStyle.Primary)
-    //     .setCustomId(`movie_torrent_yts_${movie.id}`);
-    // });
+    //     .setCustomId(`movie_torrent_yts_page_2`),
+    // ];
 
     return interaction.reply({
       content: movies.message,
       embeds,
-      //   components: [
-      //     {
-      //       type: ComponentType.ActionRow,
-      //       components: buttons,
-      //     },
-      //   ],
+      // components: [
+      // {
+      // type: ComponentType.ActionRow,
+      // components: buttons,
+      // },
+      // ],
     });
   }
 }
